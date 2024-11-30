@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  useMultipleFiles                 = true
+  createInputTypes                 = false
+  createOptionalDefaultValuesTypes = true
+  output                           = "../src/db"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Question {
+  id            String @id @db.Uuid
+  quizId        String @db.Uuid
+  question      String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption String
+  score         Int
+  Quiz          Quiz   @relation(fields: [quizId], references: [id])
+}
+
+model Quiz {
+  id          String     @id @db.Uuid
+  title       String
+  hostId      String     @db.Uuid
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  category    String
+  description String
+  Question    Question[]
+  User        User       @relation(fields: [hostId], references: [id])
+  Session     Session[]
+}
+
+model Score {
+  id        String   @id @db.Uuid
+  userId    String   @db.Uuid
+  sessionId String   @db.Uuid
+  score     Int
+  createdAt DateTime @default(now())
+  Session   Session  @relation(fields: [sessionId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        String    @id @db.Uuid
+  quizId    String    @db.Uuid
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  userId    String?   @db.Uuid
+  Score     Score[]
+  Quiz      Quiz      @relation(fields: [quizId], references: [id])
+  User      User?     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id        String    @id @db.Uuid
+  username  String    @unique
+  password  String
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  Quiz      Quiz[]
+  Score     Score[]
+  Session   Session[]
+}
