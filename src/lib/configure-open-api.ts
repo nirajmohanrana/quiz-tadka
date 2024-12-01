@@ -2,19 +2,21 @@ import { apiReference } from "@scalar/hono-api-reference";
 
 import type { AppOpenAPI } from "./types";
 
+import { APP_NAME, DOC_URL, REFERENCE_URL } from "@/config";
+
 import packageJSON from "../../package.json" with { type: "json" };
 
 export default function configureOpenAPI(app: AppOpenAPI) {
-  app.doc("/doc", {
+  app.doc(DOC_URL, {
     openapi: "3.0.0",
     info: {
       version: packageJSON.version,
-      title: "Tasks API",
+      title: APP_NAME,
     },
   });
 
   app.get(
-    "/reference",
+    REFERENCE_URL,
     apiReference({
       theme: "bluePlanet",
       layout: "modern",
@@ -24,7 +26,7 @@ export default function configureOpenAPI(app: AppOpenAPI) {
       },
       hideDarkModeToggle: true,
       spec: {
-        url: "/doc",
+        url: DOC_URL,
       },
     })
   );

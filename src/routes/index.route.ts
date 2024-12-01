@@ -2,8 +2,10 @@ import { createRoute } from "@hono/zod-openapi";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import { jsonContent } from "stoker/openapi/helpers";
 import { createMessageObjectSchema } from "stoker/openapi/schemas";
+import packageJSON from "../../package.json" with { type: "json" };
 
 import { createRouter } from "@/lib/create-app";
+import { APP_NAME } from "@/config";
 
 const router = createRouter().openapi(
   createRoute({
@@ -12,15 +14,17 @@ const router = createRouter().openapi(
     path: "/",
     responses: {
       [HttpStatusCodes.OK]: jsonContent(
-        createMessageObjectSchema("Quiz Tadka API Index"),
-        "Quiz Tadka API Index"
+        createMessageObjectSchema(
+          `${APP_NAME} API Index - version: ${packageJSON.version}`
+        ),
+        `${APP_NAME} API Index - version: ${packageJSON.version}`
       ),
     },
   }),
   (c) => {
     return c.json(
       {
-        message: "Quiz Tadka API Index",
+        message: `${APP_NAME} API Index - version: ${packageJSON.version}`,
       },
       HttpStatusCodes.OK
     );

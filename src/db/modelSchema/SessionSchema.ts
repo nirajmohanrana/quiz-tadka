@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /////////////////////////////////////////
 // SESSION SCHEMA
@@ -10,18 +10,38 @@ export const SessionSchema = z.object({
   startedAt: z.coerce.date(),
   endedAt: z.coerce.date().nullable(),
   userId: z.string().nullable(),
-})
+});
 
-export type Session = z.infer<typeof SessionSchema>
+export type Session = z.infer<typeof SessionSchema>;
 
 /////////////////////////////////////////
-// SESSION OPTIONAL DEFAULTS SCHEMA
+// SESSION CREATE SCHEMA
 /////////////////////////////////////////
 
-export const SessionOptionalDefaultsSchema = SessionSchema.merge(z.object({
-  startedAt: z.coerce.date().optional(),
-}))
+export const SessionCreateSchema = SessionSchema.omit({ id: true });
 
-export type SessionOptionalDefaults = z.infer<typeof SessionOptionalDefaultsSchema>
+export type SessionCreate = z.infer<typeof SessionCreateSchema>;
+
+/////////////////////////////////////////
+// SESSION UPDATE SCHEMA
+/////////////////////////////////////////
+
+export const SessionUpdateSchema = SessionSchema.partial();
+
+export type SessionUpdate = z.infer<typeof SessionUpdateSchema>;
+
+/////////////////////////////////////////
+// SESSION DELETE SCHEMA
+/////////////////////////////////////////
+
+export const SessionDeleteSchema = z.object({
+  id: z.string(),
+});
+
+export type SessionDelete = z.infer<typeof SessionDeleteSchema>;
+
+/////////////////////////////////////////
+// DEFAULT EXPORT
+/////////////////////////////////////////
 
 export default SessionSchema;
